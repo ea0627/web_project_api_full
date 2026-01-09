@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
 module.exports.createUser = (req, res) => {
     const {
@@ -39,3 +40,37 @@ module.exports.createUser = (req, res) => {
         return res.status(500).send({ message: 'Error del servidor' });
     });
 };
+
+module.exports.login = (req, res) => {
+    const { email, password } = req.body;
+
+    User.findOne({ email }) // por ahora aún funciona si password está select por defecto
+        .then((user) => {
+            if (!user) {
+                return Promise.reject(new Error('AUTH_ERROR'));
+            }
+
+            return bcrypt.compare(password, user.password)
+                .then((matched) => {
+                    if (!matched) {
+                        return Promise.reject(new Error('AUTH_ERROR'));
+                    }
+                    const token = jwt.sign(
+                        { _id: user._id },
+                        process.env.NODE_ENV === 'production'
+                            ? process.env.JWT_SECRET
+                            : 'dev-secret',
+                        { expiresIn: '7d' },
+                    );
+
+                    return res.send({ token });
+                });
+            })
+            .catch((err) => {
+                if (err.message === 'AUTH_ERROR') {
+                    return res.status(401).send({ message: 'Correo o contraseña incorrectos' });
+                }
+                return res.status(500).send({ message: 'Error del servidor' });
+            });
+};
+

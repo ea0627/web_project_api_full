@@ -28,8 +28,13 @@ Parte I — Autorización y registro de usuarios
             name: "Jacques Cousteau"
             about: "Explorador"
             avatar: enlace por defecto
-            
- I.3 — Crear controlador login (JWT expira en 1 semana)
+
+✅  I.3 — Crear controlador login (JWT expira en 1 semana)
+
+        Se creó el controlador login para autenticar por email y password.
+        Si las credenciales son correctas, se genera un JWT con payload { _id } que expira en 7 días.
+        Si las credenciales son inválidas, el servidor responde con 401.
+
  I.4 — Crear rutas POST /signin y POST /signup
  I.5 — Middleware de autorización auth
  I.6 — Ruta GET /users/me
