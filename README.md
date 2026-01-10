@@ -35,7 +35,12 @@ Parte I — Autorización y registro de usuarios
         Si las credenciales son correctas, se genera un JWT con payload { _id } que expira en 7 días.
         Si las credenciales son inválidas, el servidor responde con 401.
 
- I.4 — Crear rutas POST /signin y POST /signup
+✅  I.4 — Crear rutas POST /signin y POST /signup
+
+        Se agregaron las rutas POST /signin y POST /signup en app.js.
+        Se conectaron a los controladores login y createUser.
+        La creación de usuarios se maneja desde /signup (ya no se usa la ruta de creación en routes/users.js, si aplicaba).
+
  I.5 — Middleware de autorización auth
  I.6 — Ruta GET /users/me
  I.7 — Proteger rutas (excepto signin/signup)
