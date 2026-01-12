@@ -75,7 +75,12 @@ Parte I — Autorización y registro de usuarios
         Se configuró el campo password del esquema con select: false para que no se devuelva por defecto.
         En login, se usa User.findOne({ email }).select('+password') para obtener el hash solo durante la autenticación.
 
- I.11 — Configurar token en el front (localStorage + headers Authorization)
+✅  I.11 — Configurar token en el front (localStorage + headers Authorization)
+
+        Se guarda el JWT en localStorage (jwt) y en estado al iniciar sesión.
+        Al cargar la app, se lee el token y se valida solicitando GET /users/me.
+        Se envía Authorization: Bearer <token> en las solicitudes protegidas a la API.
+        Se ajustaron los endpoints del frontend para usar rutas locales/proxy hacia el backend.
 
 Parte II — Configuración y despliegue
 

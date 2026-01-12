@@ -1,0 +1,109 @@
+.popup {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.popup_opened {
+  visibility: visible;
+  opacity: 1;
+}
+
+.popup__container {
+  width: 430px;
+  background-color: #fff;
+  padding: 60px 36px 32px;
+  border-radius: 10px;
+  text-align: center;
+  position: relative;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.popup__close {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.popup__close::before,
+.popup__close::after {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 2px;
+  background-color: #fff;
+  top: 50%;
+  left: 50%;
+}
+
+.popup__close::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.popup__close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.popup__icon {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 32px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.popup__icon_success {
+  background-image: url('../../images/success.png');
+}
+
+.popup__icon_error {
+  background-image: url('../../images/error.png');
+}
+
+.popup__title {
+  font-size: 24px;
+  font-weight: 900;
+  color: black;
+}
+
+/* MOBILE */
+@media screen and (max-width: 480px) {
+  .popup__container {
+    width: 280px;
+    padding: 32px 16px 24px;
+  }
+
+  .popup__icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 16px;
+  }
+
+  .popup__title {
+    font-size: 18px;
+    line-height: 22px;
+    margin: 0;
+    max-width: 240px; /* 🔥 evita overflow horizontal */
+  }
+
+  .popup__close {
+    top: -36px;
+    right: 0;
+  }
+}
+
