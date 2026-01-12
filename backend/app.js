@@ -1,6 +1,7 @@
 const express = require('express');
 
-const { login, createUser, getCurrentUser } = require('./controllers/users');
+const { login, createUser, getCurrentUser, updateProfile } = require('./controllers/users');
+
 const auth = require('./middlewares/auth');
 
 const app = express();
@@ -16,5 +17,6 @@ app.use(auth);
 
 // rutas protegidas
 app.get('/users/me', getCurrentUser);
+app.patch('/users/me', updateProfile);
 
 module.exports = app;

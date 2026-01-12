@@ -64,7 +64,12 @@ Parte I — Autorización y registro de usuarios
         Se verificó que no existe el middleware que asignaba un _id fijo en req.user.
         req.user se establece únicamente a través del middleware auth usando el payload del JWT.
 
- I.9 — Verificar derechos (no borrar/editar de otros)
+✅  I.9 — Verificar derechos (no borrar/editar de otros)
+
+        Se implementó la edición del perfil únicamente para el usuario autenticado mediante PATCH /users/me usando req.user._id.
+        Un usuario no puede editar perfiles ajenos porque no se usa edición por userId.
+        La restricción de eliminación de tarjetas por propietario se implementará cuando se agreguen los endpoints de tarjetas.
+
  I.10 — Evitar retornar el hash (select: false + .select('+password'))
  I.11 — Configurar token en el front (localStorage + headers Authorization)
 
