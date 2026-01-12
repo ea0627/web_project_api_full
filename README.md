@@ -70,7 +70,11 @@ Parte I — Autorización y registro de usuarios
         Un usuario no puede editar perfiles ajenos porque no se usa edición por userId.
         La restricción de eliminación de tarjetas por propietario se implementará cuando se agreguen los endpoints de tarjetas.
 
- I.10 — Evitar retornar el hash (select: false + .select('+password'))
+✅  I.10 — Evitar retornar el hash (select: false + .select('+password'))
+
+        Se configuró el campo password del esquema con select: false para que no se devuelva por defecto.
+        En login, se usa User.findOne({ email }).select('+password') para obtener el hash solo durante la autenticación.
+
  I.11 — Configurar token en el front (localStorage + headers Authorization)
 
 Parte II — Configuración y despliegue

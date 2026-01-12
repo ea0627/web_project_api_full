@@ -44,7 +44,7 @@ module.exports.createUser = (req, res) => {
 module.exports.login = (req, res) => {
     const { email, password } = req.body;
 
-    User.findOne({ email }) // por ahora aún funciona si password está select por defecto
+    User.findOne({ email }).select('+password')
         .then((user) => {
             if (!user) {
                 return Promise.reject(new Error('AUTH_ERROR'));
