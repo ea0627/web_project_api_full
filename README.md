@@ -59,7 +59,11 @@ Parte I — Autorización y registro de usuarios
         Las rutas protegidas devuelven 403 cuando no hay autorización.
         Si el token es inválido, se devuelve 401.
 
- I.8 — Eliminar usuario hardcodeado en req.user
+✅  I.8 — Eliminar usuario hardcodeado en req.user
+
+        Se verificó que no existe el middleware que asignaba un _id fijo en req.user.
+        req.user se establece únicamente a través del middleware auth usando el payload del JWT.
+
  I.9 — Verificar derechos (no borrar/editar de otros)
  I.10 — Evitar retornar el hash (select: false + .select('+password'))
  I.11 — Configurar token en el front (localStorage + headers Authorization)
