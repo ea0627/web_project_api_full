@@ -41,7 +41,12 @@ Parte I — Autorización y registro de usuarios
         Se conectaron a los controladores login y createUser.
         La creación de usuarios se maneja desde /signup (ya no se usa la ruta de creación en routes/users.js, si aplicaba).
 
- I.5 — Middleware de autorización auth
+✅  I.5 — Middleware de autorización auth
+
+        Se creó el middleware auth para verificar el JWT desde los encabezados (Authorization: Bearer <token>).
+        Si el token es válido, el payload se asigna a req.user y se ejecuta next().
+        Si el token es inválido o no existe, el servidor responde con 401.
+
  I.6 — Ruta GET /users/me
  I.7 — Proteger rutas (excepto signin/signup)
  I.8 — Eliminar usuario hardcodeado en req.user
