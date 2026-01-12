@@ -74,3 +74,21 @@ module.exports.login = (req, res) => {
             });
 };
 
+module.exports.getCurrentUser = (req, res) => {
+    User.findById(req.user._id)
+        .then((user) => {
+            if (!user) {
+                return res.status(404).send({ message: 'Usuario no encontrado' });
+        }
+
+      // Evitar devolver password aunque aún no tengamos select:false (I.10)
+        return res.send({
+            _id: user._id,
+            name: user.name,
+            about: user.about,
+            avatar: user.avatar,
+            email: user.email,
+        });
+    })
+    .catch(() => res.status(500).send({ message: 'Error del servidor' }));
+};

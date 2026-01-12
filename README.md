@@ -47,7 +47,12 @@ Parte I — Autorización y registro de usuarios
         Si el token es válido, el payload se asigna a req.user y se ejecuta next().
         Si el token es inválido o no existe, el servidor responde con 401.
 
- I.6 — Ruta GET /users/me
+✅  I.6 — Ruta GET /users/me
+
+        Se creó la ruta GET /users/me para obtener la información del usuario actual.
+        La ruta está protegida con el middleware auth y usa req.user._id del token.
+        La respuesta devuelve los datos del usuario (sin incluir la contraseña).
+
  I.7 — Proteger rutas (excepto signin/signup)
  I.8 — Eliminar usuario hardcodeado en req.user
  I.9 — Verificar derechos (no borrar/editar de otros)

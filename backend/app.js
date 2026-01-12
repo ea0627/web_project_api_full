@@ -1,6 +1,8 @@
 const express = require('express');
 
-const { login, createUser } = require('./controllers/users');
+const { login, createUser, getCurrentUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
+
 
 const app = express();
 
@@ -14,5 +16,7 @@ app.get('/health', (req, res) => {
 // ✅ rutas públicas de auth
 app.post('/signin', login);
 app.post('/signup', createUser);
+
+app.get('/users/me', auth, getCurrentUser);
 
 module.exports = app;
