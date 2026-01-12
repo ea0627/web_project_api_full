@@ -6,6 +6,9 @@ const auth = require('./middlewares/auth');
 
 const app = express();
 
+const errorHandler = require('./middlewares/error-handler');
+
+
 app.use(express.json());
 
 // ✅ rutas públicas de auth
@@ -20,3 +23,6 @@ app.get('/users/me', getCurrentUser);
 app.patch('/users/me', updateProfile);
 
 module.exports = app;
+
+app.use(errorHandler);
+

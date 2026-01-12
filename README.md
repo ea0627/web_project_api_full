@@ -84,7 +84,13 @@ Parte I — Autorización y registro de usuarios
 
 Parte II — Configuración y despliegue
 
- II.1 — Manejo centralizado de errores (500 por defecto)
+✅  II.1 — Manejo centralizado de errores (500 por defecto)
+
+        Se implementó middleware centralizado para manejar errores en un solo lugar.
+        Los controladores delegan errores usando next(err) en lugar de responder desde .catch.
+        Errores conocidos usan statusCode (400/401/404/409) y los imprevistos responden con 500 y mensaje genérico.
+        Se ajustó ESLint para ignorar next en no-unused-vars.
+
  II.2 — Validación de solicitudes (celebrate/Joi + validator.isURL)
  II.3 — Logs de requests y errores (JSON, sin subir logs al repo)
  II.4 — Integrar frontend y backend en servidor (build + scp)

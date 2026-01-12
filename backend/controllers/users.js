@@ -1,8 +1,8 @@
 const bcrypt = require('bcryptjs');
-const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
     const {
         name,
         about,
@@ -29,60 +29,63 @@ module.exports.createUser = (req, res) => {
     .catch((err) => {
       // email duplicado (Mongo)
         if (err.code === 11000) {
-            return res.status(409).send({ message: 'Ya existe un usuario con ese email' });
+            err.statusCode = 409;
+            err.message = 'Ya existe un usuario con ese email';
         }
 
       // errores de validación de Mongoose
         if (err.name === 'ValidationError') {
-            return res.status(400).send({ message: 'Datos inválidos' });
+            err.statusCode = 400;
+            err.message = 'Datos inválidos';
         }
 
-        return res.status(500).send({ message: 'Error del servidor' });
+        next(err);
     });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
     const { email, password } = req.body;
 
     User.findOne({ email }).select('+password')
         .then((user) => {
             if (!user) {
-                return Promise.reject(new Error('AUTH_ERROR'));
+                const err = new Error('Correo o contraseña incorrectos');
+                err.statusCode = 401;
+                throw err;
             }
 
-            return bcrypt.compare(password, user.password)
-                .then((matched) => {
-                    if (!matched) {
-                        return Promise.reject(new Error('AUTH_ERROR'));
-                    }
-                    const token = jwt.sign(
-                        { _id: user._id },
-                        process.env.NODE_ENV === 'production'
-                            ? process.env.JWT_SECRET
-                            : 'dev-secret',
-                        { expiresIn: '7d' },
-                    );
-
-                    return res.send({ token });
-                });
-            })
-            .catch((err) => {
-                if (err.message === 'AUTH_ERROR') {
-                    return res.status(401).send({ message: 'Correo o contraseña incorrectos' });
+        return bcrypt.compare(password, user.password)
+            .then((matched) => {
+                if (!matched) {
+                    const err = new Error('Correo o contraseña incorrectos');
+                    err.statusCode = 401;
+                    throw err;
                 }
-                return res.status(500).send({ message: 'Error del servidor' });
-            });
+
+            const token = jwt.sign(
+                { _id: user._id },
+                process.env.NODE_ENV === 'production'
+                    ? process.env.JWT_SECRET
+                    : 'dev-secret',
+                { expiresIn: '7d' },
+            );
+
+            res.send({ token });
+        });
+    })
+    .catch(next);
 };
 
-module.exports.getCurrentUser = (req, res) => {
+module.exports.getCurrentUser = (req, res, next) => {
     User.findById(req.user._id)
         .then((user) => {
             if (!user) {
-                return res.status(404).send({ message: 'Usuario no encontrado' });
-        }
+                const err = new Error('Usuario no encontrado');
+                err.statusCode = 404;
+                throw err;
+            }
 
-      // Evitar devolver password aunque aún no tengamos select:false (I.10)
-        return res.send({
+        res.send({
             _id: user._id,
             name: user.name,
             about: user.about,
@@ -90,10 +93,10 @@ module.exports.getCurrentUser = (req, res) => {
             email: user.email,
         });
     })
-    .catch(() => res.status(500).send({ message: 'Error del servidor' }));
+    .catch(next);
 };
 
-module.exports.updateProfile = (req, res) => {
+module.exports.updateProfile = (req, res, next) => {
     const { name, about } = req.body;
 
     User.findByIdAndUpdate(
@@ -101,15 +104,20 @@ module.exports.updateProfile = (req, res) => {
         { name, about },
         { new: true, runValidators: true },
     )
-        .then((user) => {
-            if (!user) return res.status(404).send({ message: 'Usuario no encontrado' });
-            return res.send({
-                _id: user._id,
-                name: user.name,
-                about: user.about,
-                avatar: user.avatar,
-                email: user.email,
-            });
-        })
-    .catch(() => res.status(500).send({ message: 'Error del servidor' }));
+    .then((user) => {
+        if (!user) {
+            const err = new Error('Usuario no encontrado');
+            err.statusCode = 404;
+            throw err;
+        }
+
+        res.send({
+            _id: user._id,
+            name: user.name,
+            about: user.about,
+            avatar: user.avatar,
+            email: user.email,
+        });
+    })
+    .catch(next);
 };
