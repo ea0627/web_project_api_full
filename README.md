@@ -53,7 +53,12 @@ Parte I — Autorización y registro de usuarios
         La ruta está protegida con el middleware auth y usa req.user._id del token.
         La respuesta devuelve los datos del usuario (sin incluir la contraseña).
 
- I.7 — Proteger rutas (excepto signin/signup)
+✅  I.7 — Proteger rutas (excepto signin/signup)
+
+        Se protegieron todas las rutas con el middleware auth, dejando públicas solo POST /signin y POST /signup.
+        Las rutas protegidas devuelven 403 cuando no hay autorización.
+        Si el token es inválido, se devuelve 401.
+
  I.8 — Eliminar usuario hardcodeado en req.user
  I.9 — Verificar derechos (no borrar/editar de otros)
  I.10 — Evitar retornar el hash (select: false + .select('+password'))

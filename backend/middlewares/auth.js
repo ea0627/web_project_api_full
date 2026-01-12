@@ -5,7 +5,7 @@ module.exports = (req, res, next) => {
 
     // Espera: "Bearer <token>"
     if (!authorization || !authorization.startsWith('Bearer ')) {
-        return res.status(401).send({ message: 'Se requiere autorización' });
+        return res.status(403).send({ message: 'Acceso prohibido' });
     }
 
     const token = authorization.replace('Bearer ', '');
