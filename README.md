@@ -91,7 +91,14 @@ Parte II — Configuración y despliegue
         Errores conocidos usan statusCode (400/401/404/409) y los imprevistos responden con 500 y mensaje genérico.
         Se ajustó ESLint para ignorar next en no-unused-vars.
 
- II.2 — Validación de solicitudes (celebrate/Joi + validator.isURL)
+✅   II.2 — Validación de solicitudes (celebrate/Joi + validator.isURL)
+
+        Se validan los cuerpos de las solicitudes antes de llegar a los controladores usando celebrate.
+        /signup valida email, password y campos opcionales (name, about, avatar).
+        /signin valida email y password.
+        PATCH /users/me valida name y about.
+        Se implementó validación de URLs con validator.isURL usando Joi.custom().
+        
  II.3 — Logs de requests y errores (JSON, sin subir logs al repo)
  II.4 — Integrar frontend y backend en servidor (build + scp)
  II.5 — Desplegar API en servidor

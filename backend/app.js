@@ -8,21 +8,30 @@ const app = express();
 
 const errorHandler = require('./middlewares/error-handler');
 
+const { errors } = require('celebrate');
+const {
+    signupValidation,
+    signinValidation,
+    updateProfileValidation,
+} = require('./middlewares/validation');
+
+
 
 app.use(express.json());
 
 // ✅ rutas públicas de auth
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', signinValidation, login);
+app.post('/signup', signupValidation, createUser);
 
 // 🔒 todo lo que sigue requiere auth
 app.use(auth);
 
 // rutas protegidas
 app.get('/users/me', getCurrentUser);
-app.patch('/users/me', updateProfile);
+app.patch('/users/me', updateProfileValidation, updateProfile);
 
 module.exports = app;
 
+app.use(errors());
 app.use(errorHandler);
 
