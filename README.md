@@ -99,7 +99,13 @@ Parte II — Configuración y despliegue
         PATCH /users/me valida name y about.
         Se implementó validación de URLs con validator.isURL usando Joi.custom().
         
- II.3 — Logs de requests y errores (JSON, sin subir logs al repo)
+✅   II.3 — Logs de requests y errores (JSON, sin subir logs al repo)
+
+        Se implementó registro de solicitudes y errores con winston + express-winston.
+        Cada request se guarda en backend/logs/request.log en formato JSON.
+        Los errores se guardan en backend/logs/error.log en formato JSON.
+        Los archivos de logs están ignorados por Git mediante .gitignore.
+
  II.4 — Integrar frontend y backend en servidor (build + scp)
  II.5 — Desplegar API en servidor
  II.6 — App totalmente funcional (CRUD + likes + auth)
