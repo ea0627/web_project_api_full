@@ -106,7 +106,13 @@ Parte II — Configuración y despliegue
         Los errores se guardan en backend/logs/error.log en formato JSON.
         Los archivos de logs están ignorados por Git mediante .gitignore.
 
- II.4 — Integrar frontend y backend en servidor (build + scp)
+✅   II.4 — Integrar frontend y backend en servidor (build + scp)
+
+        Se compila el frontend para producción (npm run build) y se genera la carpeta build/dist.
+        Se copia el build al servidor (scp/rsync) dentro de la ruta pública definida por Nginx.
+        En el servidor, Nginx sirve el frontend (estáticos) y enruta las solicitudes /api hacia el backend (proxy_pass).
+        Se verifica que el frontend consume la API del servidor (no localhost) y que no hay errores de CORS.
+
  II.5 — Desplegar API en servidor
  II.6 — App totalmente funcional (CRUD + likes + auth)
  II.7 — Crear .env en servidor
