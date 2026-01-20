@@ -5,6 +5,8 @@ const { login, createUser, getCurrentUser, updateProfile } = require('./controll
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/error-handler');
 
+const cors = require('cors');
+
 const {
     signupValidation,
     signinValidation,
@@ -21,6 +23,20 @@ app.use(requestLogger);
 
 // 2) parseo JSON
 app.use(express.json());
+
+const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://aroundapi.mooo.com',
+];
+
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true,
+}));
+
+app.options(/.*/, cors());
+
 
 // 3) rutas públicas
 app.post('/signin', signinValidation, login);
