@@ -113,7 +113,14 @@ Parte II — Configuración y despliegue
         En el servidor, Nginx sirve el frontend (estáticos) y enruta las solicitudes /api hacia el backend (proxy_pass).
         Se verifica que el frontend consume la API del servidor (no localhost) y que no hay errores de CORS.
 
- II.5 — Desplegar API en servidor
+✅   II.5 — Desplegar API en servidor
+
+        Se utilizó una VM en Google Cloud (Compute Engine) para desplegar el backend.
+        Se instaló y configuró Nginx como reverse proxy (puerto 80) hacia el backend en localhost:3000.
+        El backend se mantuvo en ejecución con PM2.
+        La API quedó accesible por nombre de dominio (temporal FreeDNS): aroundapi.mooo.com
+        Se verificó el acceso externo y la funcionalidad (ej: /users/me responde 401 sin token).
+
  II.6 — App totalmente funcional (CRUD + likes + auth)
  II.7 — Crear .env en servidor
  II.8 — Dominio + subdominio API + nginx
