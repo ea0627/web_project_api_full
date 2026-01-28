@@ -2,6 +2,12 @@
 
 Proyecto final (Sprint 19): backend + frontend en un solo repositorio.
 
+## Demo (Proyecto desplegado)
+
+- Frontend: http://around-web.mooo.com
+- API (subdominio): http://aroundapi.mooo.com
+- API (vía proxy): http://around-web.mooo.com/api
+
 ## Estructura
 
 ```bash
@@ -9,6 +15,7 @@ web_project_api_full/
 ├─ backend/
 ├─ frontend/
 └─ README.md
+```
 
 Progreso — Sprint 19
 
@@ -16,7 +23,7 @@ Parte I — Autorización y registro de usuarios
 
 ✅  I.1 — Esquema de usuario: email y password
 
-        Se aggregator los campos email y password al esquema de usuario.
+        Se agregaron los campos email y password al esquema de usuario.
         email es único (unique: true) y se valida con validator.isEmail.
         En este punto, password aún se devuelve por defecto (se ajustará en el punto I.10).
 
