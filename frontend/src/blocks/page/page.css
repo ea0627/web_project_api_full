@@ -4,3 +4,10 @@
     color: #fff;
     font-family: 'Inter', Arial, sans-serif;
 }
+
+/* Contenedor con el mismo “ancho útil” del header */
+.page__content {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 19px;
+}

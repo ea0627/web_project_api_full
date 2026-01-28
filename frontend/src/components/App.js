@@ -6,24 +6,48 @@ import Login from './Login';
 import Register from './Register';
 import Main from './Main';
 import InfoTooltip from './InfoTooltip';
+import Header from './Header';
+import EditProfilePopup from './EditProfilePopup';
+import EditAvatarPopup from './EditAvatarPopup';
 
 import api from '../utils/api';
 import * as auth from '../utils/auth';
 import CurrentUserContext from '../contexts/CurrentUserContext';
-import Header from './Header';
 
 function App() {
   const history = useHistory();
 
+  const [cards, setCards] = React.useState([]);
   const [token, setToken] = React.useState(null);
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [email, setEmail] = React.useState('');
   const [currentUser, setCurrentUser] = React.useState({});
+
   const [isTooltipOpen, setIsTooltipOpen] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
 
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
+
   /* ======================
-    LOGIN
+     POPUPS
+  ====================== */
+  function closeAllPopups() {
+    setIsTooltipOpen(false);
+    setIsEditProfilePopupOpen(false);
+    setIsEditAvatarPopupOpen(false);
+  }
+
+  function handleEditProfileClick() {
+    setIsEditProfilePopupOpen(true);
+  }
+
+  function handleEditAvatarClick() {
+    setIsEditAvatarPopupOpen(true);
+  }
+
+  /* ======================
+     LOGIN
   ====================== */
   function handleLogin({ email, password }) {
     auth.authorize(email, password)
@@ -32,8 +56,7 @@ function App() {
 
         localStorage.setItem('jwt', data.token);
         setToken(data.token);
-
-        api.setToken(data.token); // ✅
+        api.setToken(data.token);
 
         setLoggedIn(true);
         setEmail(email);
@@ -42,9 +65,8 @@ function App() {
       .catch(console.log);
   }
 
-
   /* ======================
-    REGISTER
+     REGISTER
   ====================== */
   function handleRegister({ email, password }) {
     auth.register(email, password)
@@ -60,6 +82,30 @@ function App() {
   }
 
   /* ======================
+     UPDATE USER (name/about)
+  ====================== */
+  function handleUpdateUser({ name, about }) {
+    api.updateUserInfo({ name, about })
+      .then((user) => {
+        setCurrentUser(user);
+        closeAllPopups();
+      })
+      .catch(console.log);
+  }
+
+  /* ======================
+     UPDATE AVATAR
+  ====================== */
+  function handleUpdateAvatar({ avatar }) {
+    api.updateAvatar({ avatar })
+      .then((user) => {
+        setCurrentUser(user);
+        closeAllPopups();
+      })
+      .catch(console.log);
+  }
+
+  /* ======================
      CHECK TOKEN ON MOUNT
   ====================== */
   React.useEffect(() => {
@@ -67,38 +113,25 @@ function App() {
     if (!savedToken) return;
 
     setToken(savedToken);
-    api.setToken(savedToken); // ✅
+    api.setToken(savedToken);
 
-  // ✅ validamos token pidiendo /users/me
-  api.getUserInfo()
-    .then((user) => {
-      setCurrentUser(user);
-      setLoggedIn(true);
-      setEmail(user.email);
-      history.push('/');
-    })
-    .catch(() => {
-      localStorage.removeItem('jwt');
-      setLoggedIn(false);
-      setEmail('');
-      setToken(null);
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
-
-
-  /* ======================
-     LOAD USER INFO
-  ====================== */
- /* React.useEffect(() => {
-    if (!loggedIn) return;
-
-    api.getUserInfo()
-      .then((data) => {
-        setCurrentUser(data);
+    Promise.all([api.getUserInfo(), api.getInitialCards()])
+      .then(([user, cardsData]) => {
+        setCurrentUser(user);
+        setCards(cardsData);
+        setLoggedIn(true);
+        setEmail(user.email);
+        history.push('/');
       })
-      .catch(console.log);
-  }, [loggedIn]); */
+      .catch(() => {
+        localStorage.removeItem('jwt');
+        setLoggedIn(false);
+        setEmail('');
+        setToken(null);
+      });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /* ======================
      LOGOUT
@@ -108,41 +141,60 @@ function App() {
     setLoggedIn(false);
     setEmail('');
     setToken(null);
+    setCurrentUser({});
+    setCards([]);
+    history.push('/signin');
   }
 
+  /*return <h1 style={{ color: 'white' }}>App render ✅</h1>;*/
+
+  
   return (
-    <CurrentUserContext.Provider value={currentUser}>
-      <>
-        <Header
-          email={email}
-          loggedIn={loggedIn}
-          onSignOut={handleSignOut}
-        />
+  <CurrentUserContext.Provider value={currentUser}>
+    <>
+      <Header
+        email={email}
+        loggedIn={loggedIn}
+        onSignOut={handleSignOut}
+      />
 
-        <Switch>
-          <ProtectedRoute exact path="/" loggedIn={loggedIn}>
-            <Main onSignOut={handleSignOut} />
-          </ProtectedRoute>
+      <Switch>
+        <ProtectedRoute exact path="/" loggedIn={loggedIn}>
+          <Main
+            cards={cards}
+            onEditProfile={handleEditProfileClick}
+            onAddPlace={() => {}}
+            onEditAvatar={() => {}}
+          />
+        </ProtectedRoute>
 
-          <Route path="/signin">
-            <Login onLogin={handleLogin} />
-          </Route>
+        <Route path="/signin">
+          <Login onLogin={handleLogin} />
+        </Route>
 
-          <Route path="/signup">
-            <Register onRegister={handleRegister} />
-          </Route>
+        <Route path="/signup">
+          <Register onRegister={handleRegister} />
+        </Route>
 
-          <Redirect to="/signin" />
-        </Switch>
+        <Redirect to="/signin" />
+      </Switch>
 
-        <InfoTooltip
-          isOpen={isTooltipOpen}
-          isSuccess={isSuccess}
-          onClose={() => setIsTooltipOpen(false)}
-        />
-      </>
-    </CurrentUserContext.Provider>
-  );
+      {/* Popups */}
+      <EditProfilePopup
+        isOpen={isEditProfilePopupOpen}
+        onClose={closeAllPopups}
+        onUpdateUser={handleUpdateUser}
+      />
+
+      <InfoTooltip
+        isOpen={isTooltipOpen}
+        isSuccess={isSuccess}
+        onClose={closeAllPopups}
+      />
+    </>
+  </CurrentUserContext.Provider>
+);
+
 }
 
 export default App;

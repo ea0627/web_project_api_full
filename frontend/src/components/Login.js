@@ -40,7 +40,7 @@ function Login({ onLogin }) {
 
             <p className="auth__caption">
                 ¿Aun no eres miembro?{' '}
-                <Link to="/signin" className="auth__link">
+                <Link to="/signup" className="auth__link">
                 Registrate aquí
                 </Link>
             </p>
