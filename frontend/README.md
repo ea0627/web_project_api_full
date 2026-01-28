@@ -3,6 +3,13 @@
 Este proyecto es una extensión del proyecto **“Alrededor de los EE.UU.”**, en el cual se implementa el **registro y la autorización de usuarios** utilizando React.  
 El objetivo principal es proteger el contenido de la aplicación mediante autenticación basada en **JWT**, asegurando que solo los usuarios autorizados puedan acceder a la ruta principal.
 
+## Demo (Proyecto desplegado)
+
+- Frontend (React): http://around-web.mooo.com
+- API (directa): http://aroundapi.mooo.com
+- API (vía proxy desde el frontend): http://around-web.mooo.com/api
+
+
 ---
 
 ## 🚀 Funcionalidad del proyecto
@@ -33,8 +40,9 @@ Si un usuario no autorizado intenta acceder a la ruta principal, es redirigido a
 - **CSS3**
   - Metodología BEM
   - Diseño responsivo con Media Queries
-- **API REST**
-  - Backend de TripleTen para registro y autorización
+- **API REST (Node.js + Express)**
+  - Backend desplegado en VM (Nginx + PM2 + MongoDB)
+  - Endpoints protegidos con JWT
 - **JWT (JSON Web Token)**
 - **LocalStorage**
 - **Context API**
@@ -57,9 +65,6 @@ Si un usuario no autorizado intenta acceder a la ruta principal, es redirigido a
 ![Register Mobile](./src/images/logged-mobile.png)
 
 ```md
-🌐 Demo en GitHub Pages
-🔗 GitHub Pages:
-El proyecto no está desplegado públicamente ya que el repositorio es privado.
 
 📁 Estructura del proyecto
 
@@ -76,6 +81,11 @@ src/
 ✔️ Proyecto funcional
 ✔️ Cumple con los requisitos del sprint
 ✔️ Listo para revisión y entrega
+
+## 📝 Notas
+
+- El repositorio es privado.
+- El despliegue se realiza en una VM con Nginx (frontend) y PM2 (backend).
 
 👨‍💻 Autor
 Eduardo Amaya
