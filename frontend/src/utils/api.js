@@ -54,6 +54,32 @@ class Api {
       .then(this._handleResponse)
       .then((res) => (Array.isArray(res) ? res : res.data));
   }
+
+    // Crear tarjeta
+  addCard({ name, link }) {
+    return fetch(`${this._baseUrl}/cards`, {
+      method: 'POST',
+      headers: this._getHeaders(),
+      body: JSON.stringify({ name, link }),
+    }).then(this._handleResponse);
+  }
+
+  // Borrar tarjeta
+  deleteCard(cardId) {
+    return fetch(`${this._baseUrl}/cards/${cardId}`, {
+      method: 'DELETE',
+      headers: this._getHeaders(),
+    }).then(this._handleResponse);
+  }
+
+  // Like
+  changeLikeCardStatus(cardId, isLiked) {
+    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+      method: isLiked ? 'DELETE' : 'PUT',
+      headers: this._getHeaders(),
+    }).then(this._handleResponse);
+  }
+
 }
 
 const api = new Api({

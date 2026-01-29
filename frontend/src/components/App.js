@@ -1,3 +1,4 @@
+// frontend/src/components/App.js
 import React from 'react';
 import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 
@@ -7,8 +8,10 @@ import Register from './Register';
 import Main from './Main';
 import InfoTooltip from './InfoTooltip';
 import Header from './Header';
+
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
+import AddPlacePopup from './AddPlacePopup';
 
 import api from '../utils/api';
 import * as auth from '../utils/auth';
@@ -28,6 +31,7 @@ function App() {
 
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
 
   /* ======================
      POPUPS
@@ -36,6 +40,7 @@ function App() {
     setIsTooltipOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
+    setIsAddPlacePopupOpen(false);
   }
 
   function handleEditProfileClick() {
@@ -44,6 +49,10 @@ function App() {
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
+  }
+
+  function handleAddPlaceClick() {
+    setIsAddPlacePopupOpen(true);
   }
 
   /* ======================
@@ -103,7 +112,43 @@ function App() {
         closeAllPopups();
       })
       .catch(console.error);
-  }   
+  }
+
+  /* ======================
+     ADD CARD
+  ====================== */
+  function handleAddPlaceSubmit({ name, link }) {
+    api.addCard({ name, link })
+      .then((newCard) => {
+        setCards((prevCards) => [newCard, ...prevCards]);
+        closeAllPopups();
+      })
+      .catch(console.log);
+  }
+
+  /* ======================
+     LIKE CARD
+  ====================== */
+  function handleCardLike(card) {
+    const isLiked = card.likes?.some((i) => i === currentUser._id || i?._id === currentUser._id);
+
+    api.changeLikeCardStatus(card._id, !isLiked) // 👈 aquí va NEGADO
+      .then((newCard) => {
+        setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
+      })
+      .catch(console.log);
+  }
+
+  /* ======================
+     DELETE CARD
+  ====================== */
+  function handleCardDelete(card) {
+    api.deleteCard(card._id)
+      .then(() => {
+        setCards((state) => state.filter((c) => c._id !== card._id));
+      })
+      .catch(console.log);
+  }
 
   /* ======================
      CHECK TOKEN ON MOUNT
@@ -128,6 +173,8 @@ function App() {
         setLoggedIn(false);
         setEmail('');
         setToken(null);
+        setCurrentUser({});
+        setCards([]);
       });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -146,62 +193,65 @@ function App() {
     history.push('/signin');
   }
 
-  /*return <h1 style={{ color: 'white' }}>App render ✅</h1>;*/
-
-  
   return (
-  <CurrentUserContext.Provider value={currentUser}>
-    <>
-      <Header
-        email={email}
-        loggedIn={loggedIn}
-        onSignOut={handleSignOut}
-      />
+    <CurrentUserContext.Provider value={currentUser}>
+      <>
+        <Header
+          email={email}
+          loggedIn={loggedIn}
+          onSignOut={handleSignOut}
+        />
 
-      <Switch>
-        <ProtectedRoute exact path="/" loggedIn={loggedIn}>
-          <Main
-            cards={cards}
-            onEditProfile={handleEditProfileClick}
-            onAddPlace={() => {}}
-            onEditAvatar={handleEditAvatarClick}
-          />
-        </ProtectedRoute>
+        <Switch>
+          <ProtectedRoute exact path="/" loggedIn={loggedIn}>
+            <Main
+              cards={cards}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={() => {}}
+              onEditAvatar={handleEditAvatarClick}
+              onCardLike={handleCardLike}
+              onCardDelete={handleCardDelete}
+            />
+          </ProtectedRoute>
 
-        <Route path="/signin">
-          <Login onLogin={handleLogin} />
-        </Route>
+          <Route path="/signin">
+            <Login onLogin={handleLogin} />
+          </Route>
 
-        <Route path="/signup">
-          <Register onRegister={handleRegister} />
-        </Route>
+          <Route path="/signup">
+            <Register onRegister={handleRegister} />
+          </Route>
 
-        <Redirect to="/signin" />
-      </Switch>
+          <Redirect to="/signin" />
+        </Switch>
 
-      {/* Popups */}
-      <EditProfilePopup
-        isOpen={isEditProfilePopupOpen}
-        onClose={closeAllPopups}
-        onUpdateUser={handleUpdateUser}
-      />
+        {/* Popups */}
+        <EditProfilePopup
+          isOpen={isEditProfilePopupOpen}
+          onClose={closeAllPopups}
+          onUpdateUser={handleUpdateUser}
+        />
 
-      <EditAvatarPopup
-        isOpen={isEditAvatarPopupOpen}
-        onClose={closeAllPopups}
-        onUpdateAvatar={handleUpdateAvatar}
-      />
+        <EditAvatarPopup
+          isOpen={isEditAvatarPopupOpen}
+          onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar}
+        />
 
+        <AddPlacePopup
+          isOpen={isAddPlacePopupOpen}
+          onClose={closeAllPopups}
+          onAddPlace={handleAddPlaceSubmit}
+        />
 
-      <InfoTooltip
-        isOpen={isTooltipOpen}
-        isSuccess={isSuccess}
-        onClose={closeAllPopups}
-      />
-    </>
-  </CurrentUserContext.Provider>
-);
-
+        <InfoTooltip
+          isOpen={isTooltipOpen}
+          isSuccess={isSuccess}
+          onClose={closeAllPopups}
+        />
+      </>
+    </CurrentUserContext.Provider>
+  );
 }
 
 export default App;

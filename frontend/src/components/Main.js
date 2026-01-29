@@ -1,8 +1,9 @@
+// frontend/src/components/Main.js
 import React from 'react';
 import Card from './Card';
 import CurrentUserContext from '../contexts/CurrentUserContext';
 
-function Main({ cards, onEditProfile, onAddPlace, onEditAvatar }) {
+function Main({ cards, onEditProfile, onAddPlace, onEditAvatar, onCardLike, onCardDelete }) {
   const currentUser = React.useContext(CurrentUserContext);
 
   return (
@@ -22,24 +23,21 @@ function Main({ cards, onEditProfile, onAddPlace, onEditAvatar }) {
             <p className="profile__about">{currentUser.about || 'Explorador'}</p>
           </div>
 
-          <button
-            type="button"
-            className="profile__edit-button"
-            onClick={onEditProfile}
-          />
+          <button type="button" className="profile__edit-button" onClick={onEditProfile} />
         </div>
 
-        <button
-          type="button"
-          className="profile__add-button"
-          onClick={onAddPlace}
-        />
+        <button type="button" className="profile__add-button" onClick={onAddPlace} />
       </section>
 
       <section className="elements">
         <ul className="elements__list">
           {(Array.isArray(cards) ? cards : []).map((card) => (
-            <Card key={card._id} card={card} />
+            <Card
+              key={card._id}
+              card={card}
+              onCardLike={onCardLike}
+              onCardDelete={onCardDelete}
+            />
           ))}
         </ul>
       </section>
