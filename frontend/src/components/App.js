@@ -96,14 +96,14 @@ function App() {
   /* ======================
      UPDATE AVATAR
   ====================== */
-  function handleUpdateAvatar({ avatar }) {
-    api.updateAvatar({ avatar })
-      .then((user) => {
-        setCurrentUser(user);
+  function handleUpdateAvatar(avatarUrl) {
+    api.updateAvatar({ avatar: avatarUrl })
+      .then((userData) => {
+        setCurrentUser(userData);
         closeAllPopups();
       })
-      .catch(console.log);
-  }
+      .catch(console.error);
+  }   
 
   /* ======================
      CHECK TOKEN ON MOUNT
@@ -164,7 +164,7 @@ function App() {
             cards={cards}
             onEditProfile={handleEditProfileClick}
             onAddPlace={() => {}}
-            onEditAvatar={() => {}}
+            onEditAvatar={handleEditAvatarClick}
           />
         </ProtectedRoute>
 
@@ -185,6 +185,13 @@ function App() {
         onClose={closeAllPopups}
         onUpdateUser={handleUpdateUser}
       />
+
+      <EditAvatarPopup
+        isOpen={isEditAvatarPopupOpen}
+        onClose={closeAllPopups}
+        onUpdateAvatar={handleUpdateAvatar}
+      />
+
 
       <InfoTooltip
         isOpen={isTooltipOpen}
